@@ -1,0 +1,1 @@
+docker build -t if3110-rest-app-1:latest .
