@@ -10,13 +10,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model Test {
-  id Int @id @default(autoincrement())
-  name String
+enum Role {
+  STUDIO
+  ADMIN
 }
 
-model Test2 {
-  id Int @id @default(autoincrement())
-  name String
+model Post {
+  post_id Int @id @default(autoincrement()) @unique
+  title String @db.VarChar(255)
+  body String @db.Text
+  created_at DateTime @db.Timestamp()
+  updated_at DateTime @db.Timestamp()
+  img_path String @db.VarChar(255)
+  music_path String @db.VarChar(255)
+  studio Studio @relation(fields: [studio_id], references: [studio_id], onDelete: Cascade)
+  studio_id Int
+}
+
+model Studio {
+  studio_id Int @id @default(autoincrement()) @unique
+  name String @db.VarChar(255)
+  email String @db.VarChar(255) @unique
+  password_h String @db.VarChar(255)
+  est_date DateTime @db.Date
+  description String @db.Text
+  role Role @default(STUDIO)
+  posts Post[]
+  fans_messages Fans_Message[]
+  studio_movies Studio_Movie[]
+}
+model Fans_Message {
+  msg_id Int @id @default(autoincrement()) @unique
+  sender String @db.VarChar(255)
+  body String? @db.Text
+  studio Studio @relation(fields: [studio_id], references: [studio_id], onDelete: Cascade)
+  studio_id Int
+}
+
+model Studio_Movie {
+  studio Studio @relation(fields: [studio_id], references: [studio_id], onDelete: Cascade)
+  studio_id Int
+  movie_id Int @id
 }
