@@ -1,9 +1,11 @@
-import express, { Request, Response } from "express";
-import { Controller } from "./controllers/Controller";
-import noMiddleware from "./middlewares/noMiddleware";
-import { Usecase } from "./usecases/Usecase";
-import { Client } from "./clients/Client";
 import * as dotenv from "dotenv";
+import express, { Request, Response } from "express";
+import fileUpload from "express-fileupload";
+import path from "path";
+import { Client } from "./clients/Client";
+import { Controller } from "./controllers/Controller";
+import prisma from "./database/Database";
+import { Usecase } from "./usecases/Usecase";
 
 const port = 8003;
 const app = express();
@@ -11,11 +13,13 @@ const app = express();
 dotenv.config();
 
 app.use(express.json());
+app.use(fileUpload({}));
+app.use("/media", express.static(path.join(__dirname, "uploads")));
 const client = new Client();
-// const usecase = new Usecase(db);
-// const controller = new Controller(usecase);
+const usecase = new Usecase(prisma);
+const controller = new Controller(usecase);
 
-// app.use("/v1/api", noMiddleware, controller.controllerRouter());
+app.use("/v1/api", controller.controllerRouter());
 
 app.get("/test1", async (req: Request, res: Response) => {
     const data = await client.mono.testMonoClient("/test", "string");
@@ -34,7 +38,11 @@ app.get("/test", async (req: Request, res: Response) => {
         return res.status(200).json(result);
     } catch (err: any) {
         const status = await client.soap.getStatusCode(err.rawResponse);
-        console.log(status["S:Envelope"]["S:Body"][0]["S:Fault"][0]["detail"][0]["ns2:Exception"][0]["message"][0]);
+        console.log(
+            status["S:Envelope"]["S:Body"][0]["S:Fault"][0]["detail"][0][
+                "ns2:Exception"
+            ][0]["message"][0]
+        );
         return res.json({ test: "keluar" });
     }
 });
