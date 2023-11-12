@@ -4,3 +4,4 @@
 /.idea
 /postgresql
 /prisma/migrations
+src/uploads

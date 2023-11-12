@@ -1,6 +1,10 @@
+import * as dotenv from "dotenv";
 import express, { Request, Response } from "express";
+import fileUpload from "express-fileupload";
+import path from "path";
+import { Client } from "./clients/Client";
 import { Controller } from "./controllers/Controller";
-import noMiddleware from "./middlewares/noMiddleware";
+import prisma from "./database/Database";
 import { Usecase } from "./usecases/Usecase";
 import { Client } from "./clients/Client";
 import * as dotenv from "dotenv";
@@ -12,13 +16,14 @@ const app = express();
 dotenv.config();
 
 app.use(express.json());
-
+app.use(fileUpload({}));
+app.use("/media", express.static(path.join(__dirname, "uploads")));
 const client = new Client();
 const db = new Database();
 const usecase = new Usecase(db.database, client);
 const controller = new Controller(usecase);
 
-app.use("/v1/api", noMiddleware, controller.controllerRouter());
+app.use("/v1/api", controller.controllerRouter());
 
 // app.get("/test1", async (req: Request, res: Response) => {
 //     const data = await client.mono.testMonoClient("/test", "string");

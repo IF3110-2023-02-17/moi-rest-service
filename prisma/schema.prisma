@@ -19,10 +19,9 @@ model Post {
   post_id Int @id @default(autoincrement()) @unique
   title String @db.VarChar(255)
   body String @db.Text
-  created_at DateTime @db.Timestamp()
-  updated_at DateTime @db.Timestamp()
+  created_at DateTime @db.Timestamp() @default(now())
+  updated_at DateTime @db.Timestamp() @updatedAt
   img_path String @db.VarChar(255)
-  music_path String @db.VarChar(255)
   studio Studio @relation(fields: [studio_id], references: [studio_id], onDelete: Cascade)
   studio_id Int
 }

@@ -10,7 +10,13 @@ export class UserUsecase {
         this.repo = repo;
     }
 
-    public async register(name: string, email: string, password: string, estDate: Date, description: string) {
+    public async register(
+        name: string,
+        email: string,
+        password: string,
+        estDate: Date,
+        description: string
+    ) {
         try {
             const countStudio: number = await this.repo.studio.count({
                 where: {
@@ -19,7 +25,10 @@ export class UserUsecase {
             });
 
             if (countStudio) {
-                throw new Exception("Email Already Used", HttpStatus.BAD_REQUEST);
+                throw new Exception(
+                    "Email Already Used",
+                    HttpStatus.BAD_REQUEST
+                );
             }
 
             const salt = await bcryptjs.genSalt(10);
@@ -42,7 +51,10 @@ export class UserUsecase {
             if (exp.status < 500) {
                 throw exp;
             } else {
-                throw new Exception("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new Exception(
+                    "Internal Server Error",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+                );
             }
         }
     }
@@ -56,13 +68,19 @@ export class UserUsecase {
             });
 
             if (!user) {
-                throw new Exception("Studio Does Not Exist", HttpStatus.UNAUTHORIZED);
+                throw new Exception(
+                    "Studio Does Not Exist",
+                    HttpStatus.UNAUTHORIZED
+                );
             }
 
             const valid = await bcryptjs.compare(password, user.password_h);
 
             if (!valid) {
-                throw new Exception("Invalid Password", HttpStatus.UNAUTHORIZED);
+                throw new Exception(
+                    "Invalid Password",
+                    HttpStatus.UNAUTHORIZED
+                );
             }
             const payload = {
                 studio_id: user.studio_id,
@@ -73,7 +91,9 @@ export class UserUsecase {
             /**
              * @todo GANTI EXPIRED TIME DI AKHIR
              */
-            const token = jwt.sign(payload, process.env.SECRET as string, { expiresIn: "50s" });
+            const token = jwt.sign(payload, process.env.SECRET as string, {
+                expiresIn: "50s",
+            });
 
             return token;
         } catch (err) {
@@ -82,7 +102,10 @@ export class UserUsecase {
             if (exp.status < 500) {
                 throw exp;
             } else {
-                throw new Exception("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new Exception(
+                    "Internal Server Error",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+                );
             }
         }
     }
