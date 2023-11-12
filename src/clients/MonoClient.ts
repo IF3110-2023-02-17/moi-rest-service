@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosInstance } from "axios";
+import axios, { AxiosInstance } from "axios";
 
 export class MonoClient {
     private apiUrl: string;
@@ -8,7 +8,7 @@ export class MonoClient {
         this.apiUrl = process.env.MONO_SERVICE_URL as string;
         this.client = axios.create({
             baseURL: this.apiUrl,
-            timeout: 1000,
+            timeout: 2000,
         });
     }
 

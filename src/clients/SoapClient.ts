@@ -12,7 +12,7 @@ export class SoapClient {
                 this.client = client;
             })
             .catch((error) => {
-                throw new Error(error);
+                // throw new Error(error);
             });
     }
 
