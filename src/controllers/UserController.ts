@@ -4,7 +4,6 @@ import noMiddleware from "../middlewares/noMiddleware";
 import { Usecase } from "../usecases/Usecase";
 import { UserUsecase } from "../usecases/UserUsecase";
 import { HttpStatus } from "../utils/HttpStatus";
-import { HttpStatusCode } from "axios";
 import { Exception } from "../utils/Exception";
 
 export class UserController implements IController {
@@ -20,6 +19,9 @@ export class UserController implements IController {
     private initalizeRouter(): void {
         this.router.post("/login", noMiddleware, this.loginHandler);
         this.router.post("/register", noMiddleware, this.registerHandler);
+        /**
+         * @todo CREATE MIDDLEWARE LOGIN
+         */
         this.router.post("/logout", noMiddleware, this.logoutHandler);
     }
 
@@ -36,17 +38,28 @@ export class UserController implements IController {
             const { name, email, password, estDate, description } = req.body;
 
             if (!name || !email || !password || !estDate || !description) {
-                throw new Exception("Field Invalid or Not Complete", HttpStatus.BAD_REQUEST);
+                throw new Exception(
+                    "Field Invalid or Not Complete",
+                    HttpStatus.BAD_REQUEST
+                );
             }
 
-            await this.user.register(name, email, password, new Date(estDate), description);
+            await this.user.register(
+                name,
+                email,
+                password,
+                new Date(estDate),
+                description
+            );
 
             return res.status(HttpStatus.SUCCESS).json({});
         } catch (err) {
             const exp = err as Exception;
             console.log(exp.status);
 
-            return res.status(exp.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ msg: exp.message });
+            return res
+                .status(exp.status || HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ msg: exp.message });
         }
     };
 
@@ -55,7 +68,10 @@ export class UserController implements IController {
             const { email, password } = req.body;
 
             if (!email || !password) {
-                throw new Exception("Field Invalid or Not Complete", HttpStatus.BAD_REQUEST);
+                throw new Exception(
+                    "Field Invalid or Not Complete",
+                    HttpStatus.BAD_REQUEST
+                );
             }
 
             const token = await this.user.login(email, password);
@@ -77,17 +93,24 @@ export class UserController implements IController {
             const exp = err as Exception;
             console.log(exp.status);
 
-            return res.status(exp.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ msg: exp.message });
+            return res
+                .status(exp.status || HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ msg: exp.message });
         }
     };
 
     logoutHandler = async (req: Request, res: Response) => {
         try {
-            return res.status(HttpStatus.ACCEPTED).clearCookie("TOKENMOI").json({
-                msg: "Logout berhasil",
-            });
+            return res
+                .status(HttpStatus.ACCEPTED)
+                .clearCookie("TOKENMOI")
+                .json({
+                    msg: "Logout berhasil",
+                });
         } catch (err) {
-            return res.status(HttpStatus.BAD_REQUEST).json({ msg: "Logout gagal" });
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json({ msg: "Logout gagal" });
         }
     };
 }
