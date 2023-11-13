@@ -10,6 +10,7 @@ export class SoapClient {
         soap.createClientAsync(this.soapUrl)
             .then((client) => {
                 this.client = client;
+                this.client.addHttpHeader("Api-Key", process.env.SOAP_API_KEY);
             })
             .catch((error) => {
                 // throw new Error(error);
@@ -29,45 +30,17 @@ export class SoapClient {
                         rawRequest: any
                     ) => {
                         if (err) {
-                            reject({
-                                result,
-                                rawRequest,
-                                rawResponse,
-                                soapHeader,
-                                err,
-                            });
+                            reject(
+                                JSON.parse(
+                                    err.root.Envelope.Body.Fault.faultstring
+                                )
+                            );
                         } else {
-                            resolve({
-                                result,
-                                rawRequest,
-                                rawResponse,
-                                soapHeader,
-                                err,
-                            });
+                            resolve(result);
                         }
                     }
                 );
             }
-        });
-    }
-
-    public getStatusCode(xml: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            parseString(xml, (error, result) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    try {
-                        resolve(
-                            result["S:Envelope"]["S:Body"][0]["S:Fault"][0][
-                                "detail"
-                            ][0]["ns2:Exception"][0]["message"][0]
-                        );
-                    } catch {
-                        resolve("500");
-                    }
-                }
-            });
         });
     }
 }

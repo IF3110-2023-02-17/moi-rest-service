@@ -22,6 +22,20 @@ const controller = new Controller(usecase);
 
 app.use("/v1/api", controller.controllerRouter());
 
+app.get("/test-soap", async (req: Request, res: Response) => {
+    try {
+        const response = await client.soap.rawMethod(
+            { studioID: 1, status: "ACCEPTED" },
+            "getSubscriptionByStatusStudio"
+        );
+
+        console.log(response);
+        return res.status(200).json(response);
+    } catch (err: any) {
+        return res.status(err.status).json({ message: err.message });
+    }
+});
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });

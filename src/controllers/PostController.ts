@@ -2,7 +2,7 @@ import { Post } from "@prisma/client";
 import { Request, Response, Router } from "express";
 import { z } from "zod";
 import { IController } from "../interfaces/IController";
-import { PostUsecase } from "../usecases/PostUsercase";
+import { PostUsecase } from "../usecases/PostUsecase";
 import { Usecase } from "../usecases/Usecase";
 
 export class PostController implements IController {

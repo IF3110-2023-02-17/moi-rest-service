@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { PostUsecase } from "./PostUsercase";
+import { PostUsecase } from "./PostUsecase";
 import { UserUsecase } from "./UserUsecase";
 import { Client } from "../clients/Client";
 
