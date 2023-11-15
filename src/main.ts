@@ -1,17 +1,23 @@
+import cors from "cors";
+import * as dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import fileUpload from "express-fileupload";
 import path from "path";
-import { Controller } from "./controllers/Controller";
-import { Usecase } from "./usecases/Usecase";
 import { Client } from "./clients/Client";
-import * as dotenv from "dotenv";
+import { Controller } from "./controllers/Controller";
 import { Database } from "./database/Database";
+import { Usecase } from "./usecases/Usecase";
 
 const port = 8003;
 const app = express();
 
 dotenv.config();
 
+app.use(
+    cors({
+        origin: ["http://localhost:5173"],
+    })
+);
 app.use(express.json());
 app.use(fileUpload({}));
 app.use("/media", express.static(path.join(__dirname, "uploads")));
