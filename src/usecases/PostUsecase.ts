@@ -102,4 +102,11 @@ export class PostUsecase {
         });
         return result;
     }
+
+    public async getAll() {
+        const result = await this.repo.post.findMany({
+            orderBy: { created_at: "desc" },
+        });
+        return result;
+    }
 }

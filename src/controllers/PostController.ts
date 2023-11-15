@@ -20,6 +20,7 @@ export class PostController implements IController {
     }
 
     private initalizeRouter(): void {
+        this.router.get("/", this.getAllHandler.bind(this));
         this.router.get("/:post_id", this.getHandler.bind(this));
         this.router.post("/", this.createHandler.bind(this));
         this.router.put("/:post_id", this.putHandler.bind(this));
@@ -45,6 +46,10 @@ export class PostController implements IController {
     }
 
     // TODO: get all, if studio get all studio's post, if user get all user's subscriptions post
+    private async getAllHandler(req: Request, res: Response) {
+        const posts = await this.post.getAll();
+        return res.status(200).json({ posts });
+    }
 
     // Handler
     private async createHandler(req: Request, res: Response) {
