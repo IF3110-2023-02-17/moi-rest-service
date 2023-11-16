@@ -17,7 +17,7 @@ export class SoapClient {
             });
     }
 
-    async rawMethod(reqArgs: any, method: string): Promise<any> {
+    async invoke(reqArgs: any, method: string): Promise<any> {
         return new Promise((resolve, reject) => {
             if (this.client) {
                 this.client[method](

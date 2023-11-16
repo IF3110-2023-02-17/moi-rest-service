@@ -37,7 +37,6 @@ model Studio {
   posts Post[]
   fans_messages Fans_Message[]
   studio_movies Studio_Movie[]
-  subscriptions Subscription[]
 }
 model Fans_Message {
   msg_id Int @id @default(autoincrement()) @unique
@@ -51,11 +50,4 @@ model Studio_Movie {
   studio Studio @relation(fields: [studio_id], references: [studio_id], onDelete: Cascade)
   studio_id Int
   movie_id Int @id
-}
-
-model Subscription {
-  subscription_id Int @id @default(autoincrement()) @unique
-  studio Studio @relation(fields: [studio_id], references: [studio_id], onDelete: Cascade)
-  studio_id Int
-  target_subscription_studio_id Int
 }

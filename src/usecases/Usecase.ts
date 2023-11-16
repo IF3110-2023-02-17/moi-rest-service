@@ -18,7 +18,7 @@ export class Usecase {
         this.postUsecase = new PostUsecase(repo);
         this.menfessUsecase = new MenfessUseCase(repo);
         this.subscriptionUsecase = new SubscriptionUsecase(repo);
-        this.studioUsecase = new StudioUseCase(repo);
+        this.studioUsecase = new StudioUseCase(repo, client);
     }
 
     get user() {
