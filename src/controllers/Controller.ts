@@ -6,6 +6,7 @@ import { PostController } from "./PostController";
 import { UserController } from "./UserController";
 import { MenfessController } from "./MenfessController";
 import { SubscriptionController } from "./SubscriptionController";
+import { StudioController } from "./StudioController";
 
 export class Controller implements IController {
     private router: Router;
@@ -13,6 +14,7 @@ export class Controller implements IController {
     private postController: PostController;
     private menfessController: MenfessController;
     private subscriptionController: SubscriptionController;
+    private studioController: StudioController;
 
     constructor(usecase: Usecase) {
         this.router = Router();
@@ -20,6 +22,7 @@ export class Controller implements IController {
         this.postController = new PostController(usecase);
         this.menfessController = new MenfessController(usecase);
         this.subscriptionController = new SubscriptionController(usecase);
+        this.studioController = new StudioController(usecase);
         this.initalizeRouter();
     }
 
@@ -43,7 +46,12 @@ export class Controller implements IController {
             "/subscription",
             noMiddleware,
             this.subscriptionController.controllerRouter()
-        )
+        );
+        this.router.use(
+            "/studio",
+            noMiddleware,
+            this.studioController.controllerRouter()
+        );
     }
 
     public controllerRouter = (): Router => {
