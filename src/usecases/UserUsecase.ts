@@ -88,11 +88,9 @@ export class UserUsecase {
                 role: user.role,
             };
 
-            /**
-             * @todo GANTI EXPIRED TIME DI AKHIR
-             */
+            // 1 day
             const token = jwt.sign(payload, process.env.SECRET as string, {
-                expiresIn: "50s",
+                expiresIn: "1d",
                 algorithm: "HS256",
             });
 

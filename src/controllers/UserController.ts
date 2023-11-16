@@ -61,7 +61,7 @@ export class UserController implements IController {
 
             return res
                 .status(exp.status || HttpStatus.INTERNAL_SERVER_ERROR)
-                .json({ msg: exp.message });
+                .json({ message: exp.message });
         }
     };
 
@@ -78,18 +78,16 @@ export class UserController implements IController {
 
             const token = await this.user.login(email, password);
 
-            /**
-             * @todo GANTI MAX AGE DI AKHIR
-             */
+            // 1 day
             return res
                 .status(HttpStatus.ACCEPTED)
                 .cookie("TOKENMOI", token, {
                     path: "/",
                     httpOnly: true,
-                    maxAge: 1000,
+                    maxAge: 1000 * 60 * 60 * 24,
                 })
                 .json({
-                    msg: "Success Login !",
+                    message: "Success Login !",
                 });
         } catch (err) {
             const exp = err as Exception;
@@ -97,7 +95,7 @@ export class UserController implements IController {
 
             return res
                 .status(exp.status || HttpStatus.INTERNAL_SERVER_ERROR)
-                .json({ msg: exp.message });
+                .json({ message: exp.message });
         }
     };
 
@@ -107,12 +105,12 @@ export class UserController implements IController {
                 .status(HttpStatus.ACCEPTED)
                 .clearCookie("TOKENMOI")
                 .json({
-                    msg: "Logout berhasil",
+                    message: "Logout berhasil",
                 });
         } catch (err) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json({ msg: "Logout gagal" });
+                .json({ message: "Logout gagal" });
         }
     };
 

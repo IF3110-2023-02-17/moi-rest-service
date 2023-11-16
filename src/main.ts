@@ -1,3 +1,4 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import express, { Request, Response } from "express";
@@ -16,10 +17,12 @@ dotenv.config();
 app.use(
     cors({
         origin: ["http://localhost:5173"],
+        credentials: true,
     })
 );
 app.use(express.json());
 app.use(fileUpload({}));
+app.use(cookieParser());
 app.use("/media", express.static(path.join(__dirname, "uploads")));
 const client = new Client();
 const db = new Database();
