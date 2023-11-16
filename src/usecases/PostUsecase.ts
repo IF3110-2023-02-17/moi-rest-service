@@ -103,9 +103,12 @@ export class PostUsecase {
         return result;
     }
 
-    public async getAll() {
+    public async getAllByStudio(studio_id: number) {
         const result = await this.repo.post.findMany({
             orderBy: { created_at: "desc" },
+            where: {
+                studio_id,
+            },
         });
         return result;
     }

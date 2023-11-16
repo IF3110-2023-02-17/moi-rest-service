@@ -45,16 +45,12 @@ export class PostController implements IController {
         return res.status(200).json({ post });
     }
 
-    // TODO: get all, if studio get all studio's post, if user get all user's subscriptions post
     private async getAllHandler(req: Request, res: Response) {
-        const posts = await this.post.getAll();
+        const posts = await this.post.getAllByStudio(req.auth.studio_id);
         return res.status(200).json({ posts });
     }
 
-    // Handler
     private async createHandler(req: Request, res: Response) {
-        // TODO: check if user is authorized
-
         if (!req.files || !req.files.image) {
             return res.status(400).json({ error: "No file uploaded" });
         }
@@ -66,8 +62,7 @@ export class PostController implements IController {
             return res.status(400).json({ error: "File is not an image" });
         }
 
-        // TODO: get studio id from authorized user
-        const studioId = 1;
+        const studioId = req.auth.studio_id;
 
         const result = this.CreateSchema.safeParse(req.body);
         if (!result.success) {
@@ -88,9 +83,7 @@ export class PostController implements IController {
         }>,
         res: Response
     ) {
-        // TODO: check if user is authorized
-        // TODO: get studio id from authorized user
-        const studioId = 1;
+        const studioId = req.auth.studio_id;
 
         const postNum = Number(req.params.post_id);
         if (
@@ -139,9 +132,7 @@ export class PostController implements IController {
         }>,
         res: Response
     ) {
-        // TODO: check if user is authorized
-        // TODO: get studio id from authorized user
-        const studioId = 1;
+        const studioId = req.auth.studio_id;
 
         const postNum = Number(req.params.post_id);
         if (

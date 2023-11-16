@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { IController } from "../interfaces/IController";
+import { authRequiredMiddleware } from "../middlewares/authMiddleware";
 import noMiddleware from "../middlewares/noMiddleware";
 import { Usecase } from "../usecases/Usecase";
-import { PostController } from "./PostController";
-import { UserController } from "./UserController";
 import { MenfessController } from "./MenfessController";
-import { SubscriptionController } from "./SubscriptionController";
+import { PostController } from "./PostController";
 import { StudioController } from "./StudioController";
+import { SubscriptionController } from "./SubscriptionController";
+import { UserController } from "./UserController";
 
 export class Controller implements IController {
     private router: Router;
@@ -34,7 +35,7 @@ export class Controller implements IController {
         );
         this.router.use(
             "/posts",
-            noMiddleware,
+            authRequiredMiddleware,
             this.postController.controllerRouter()
         );
         this.router.use(

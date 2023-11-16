@@ -1,8 +1,8 @@
-import { PrismaClient, Studio } from "@prisma/client";
-import { Exception } from "../utils/Exception";
-import { HttpStatus } from "../utils/HttpStatus";
+import { PrismaClient } from "@prisma/client";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { Exception } from "../utils/Exception";
+import { HttpStatus } from "../utils/HttpStatus";
 export class UserUsecase {
     private repo: PrismaClient;
 
@@ -93,6 +93,7 @@ export class UserUsecase {
              */
             const token = jwt.sign(payload, process.env.SECRET as string, {
                 expiresIn: "50s",
+                algorithm: "HS256",
             });
 
             return token;

@@ -1,10 +1,14 @@
+import { Request, Response, Router } from "express";
 import { IController } from "../interfaces/IController";
-import { Router, Request, Response } from "express";
+import {
+    authOptionalMiddleware,
+    authRequiredMiddleware,
+} from "../middlewares/authMiddleware";
 import noMiddleware from "../middlewares/noMiddleware";
 import { Usecase } from "../usecases/Usecase";
 import { UserUsecase } from "../usecases/UserUsecase";
-import { HttpStatus } from "../utils/HttpStatus";
 import { Exception } from "../utils/Exception";
+import { HttpStatus } from "../utils/HttpStatus";
 
 export class UserController implements IController {
     private router: Router;
@@ -19,10 +23,8 @@ export class UserController implements IController {
     private initalizeRouter(): void {
         this.router.post("/login", noMiddleware, this.loginHandler);
         this.router.post("/register", noMiddleware, this.registerHandler);
-        /**
-         * @todo CREATE MIDDLEWARE LOGIN
-         */
-        this.router.post("/logout", noMiddleware, this.logoutHandler);
+        this.router.post("/logout", authRequiredMiddleware, this.logoutHandler);
+        this.router.get("/", authOptionalMiddleware, this.userHandler);
     }
 
     public controllerRouter = (): Router => {
@@ -112,5 +114,9 @@ export class UserController implements IController {
                 .status(HttpStatus.BAD_REQUEST)
                 .json({ msg: "Logout gagal" });
         }
+    };
+
+    userHandler = async (req: Request, res: Response) => {
+        return res.json({ user: req.auth || null });
     };
 }
