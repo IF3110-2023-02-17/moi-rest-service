@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { PostUsecase } from "./PostUsecase";
-import { UserUsecase } from "./UserUsecase";
 import { Client } from "../clients/Client";
 import { MenfessUseCase } from "./MenfessUsecase";
-import { SubscriptionUsecase } from "./SubscriptionUsecase";
+import { MovieUsecase } from "./MovieUsecase";
+import { PostUsecase } from "./PostUsecase";
 import { StudioUseCase } from "./StudioUsecase";
+import { SubscriptionUsecase } from "./SubscriptionUsecase";
+import { UserUsecase } from "./UserUsecase";
 
 export class Usecase {
     private userUsecase: UserUsecase;
@@ -12,6 +13,7 @@ export class Usecase {
     private menfessUsecase: MenfessUseCase;
     private subscriptionUsecase: SubscriptionUsecase;
     private studioUsecase: StudioUseCase;
+    private movieUsecase: MovieUsecase;
 
     constructor(repo: PrismaClient, client: Client) {
         this.userUsecase = new UserUsecase(repo);
@@ -19,6 +21,7 @@ export class Usecase {
         this.menfessUsecase = new MenfessUseCase(repo);
         this.subscriptionUsecase = new SubscriptionUsecase(repo, client);
         this.studioUsecase = new StudioUseCase(repo, client);
+        this.movieUsecase = new MovieUsecase(repo, client);
     }
 
     get user() {
@@ -39,5 +42,9 @@ export class Usecase {
 
     get studio() {
         return this.studioUsecase;
+    }
+
+    get movie() {
+        return this.movieUsecase;
     }
 }

@@ -8,20 +8,30 @@ services:
         env_file:
             - .env
         volumes:
-            - ./postgresql:/var/lib/postgresql/data
-#     rest-app:
-#         image: if3110-rest-app-1:latest
-#         ports:
-#             - 8003:8003
-#         hostname: rest-app
-#         env_file:
-#             - .env
-#         volumes:
-#             - .:/app
-#             - /app/node_modules
-#         depends_on:
-#             - rest-database
+            - postgresql:/var/lib/postgresql/data
+        networks:
+            - rest-backend
+    rest-app:
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - 8003:8003
+        hostname: rest-app
+        env_file:
+            - .env
+        volumes:
+            - .:/app
+            - /app/node_modules
+        depends_on:
+            - rest-database
+        networks:
+            - rest-backend
 
-# networks:
-#     rest-database-rest-app:
-#         driver: bridge
+networks:
+    rest-backend:
+        driver: bridge
+
+volumes:
+    postgresql:
+        driver: local

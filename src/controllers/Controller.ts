@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { IController } from "../interfaces/IController";
-import { authRequiredMiddleware } from "../middlewares/authMiddleware";
 import noMiddleware from "../middlewares/noMiddleware";
 import { Usecase } from "../usecases/Usecase";
 import { MenfessController } from "./MenfessController";
+import { MovieController } from "./MovieController";
 import { PostController } from "./PostController";
 import { StudioController } from "./StudioController";
 import { SubscriptionController } from "./SubscriptionController";
@@ -16,6 +16,7 @@ export class Controller implements IController {
     private menfessController: MenfessController;
     private subscriptionController: SubscriptionController;
     private studioController: StudioController;
+    private movieController: MovieController;
 
     constructor(usecase: Usecase) {
         this.router = Router();
@@ -24,6 +25,7 @@ export class Controller implements IController {
         this.menfessController = new MenfessController(usecase);
         this.subscriptionController = new SubscriptionController(usecase);
         this.studioController = new StudioController(usecase);
+        this.movieController = new MovieController(usecase);
         this.initalizeRouter();
     }
 
@@ -53,6 +55,7 @@ export class Controller implements IController {
             noMiddleware,
             this.studioController.controllerRouter()
         );
+        this.router.use("/movies", this.movieController.controllerRouter());
     }
 
     public controllerRouter = (): Router => {
