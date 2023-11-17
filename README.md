@@ -1,8 +1,4 @@
-Deskripsi singkat web service
-Skema basis data yang digunakan
-Endpoint API
-(optional) Payload, dan response API
-Penjelasan mengenai pembagian tugas masing-masing anggota (lihat formatnya pada bagian pembagian tugas).
+
 
 # Deskripsi Web Service
 Web service digunakan untuk menyediakan layanan login, register, logout, insert dan read konten, read menfess.
