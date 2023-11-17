@@ -24,6 +24,7 @@ export class StudioController implements IController {
             this.getStudioHandler
         );
         this.router.get("/", this.getAllHandler.bind(this));
+        this.router.get("/:studio_id", this.getName.bind(this));
     }
 
     controllerRouter(): Router {
@@ -68,5 +69,14 @@ export class StudioController implements IController {
     private async getAllHandler(req: Request, res: Response) {
         const studios = await this.studio.getAll();
         return res.status(200).json({ studios });
+    }
+
+    private async getName(req: Request<{ studio_id: string }>, res: Response) {
+        const studioID = Number(req.params.studio_id);
+        console.log("test");
+
+        const name = await this.studio.getStudioName(studioID);
+
+        return res.status(200).json({ name });
     }
 }

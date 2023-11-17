@@ -15,6 +15,20 @@ export class StudioUseCase {
         return result;
     }
 
+    public async getStudioName(studioID: number) {
+        const studios = await this.repo.studio.findFirst({
+            select: {
+                name: true,
+            },
+            where: {
+                role: "STUDIO",
+                studio_id: studioID,
+            },
+        });
+
+        return studios?.name;
+    }
+
     public async getStudioBySubscriber(subscriberID: number, page: number = 1) {
         const studios: any[] = await this.repo.studio.findMany({
             select: {
