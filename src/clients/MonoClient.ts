@@ -12,7 +12,16 @@ export class MonoClient {
         });
     }
 
-    public async testMonoClient(endpoint: string, param: string): Promise<{ status: number; data: any }> {
+    public async get(endpoint: string) {
+        const result = await this.client.get(endpoint);
+
+        return result;
+    }
+
+    public async testMonoClient(
+        endpoint: string,
+        param: string
+    ): Promise<{ status: number; data: any }> {
         const config = {
             headers: {
                 "Content-Type": "application/json",

@@ -1,5 +1,4 @@
 import * as soap from "soap";
-import { parseString } from "xml2js";
 
 export class SoapClient {
     private client?: soap.Client;

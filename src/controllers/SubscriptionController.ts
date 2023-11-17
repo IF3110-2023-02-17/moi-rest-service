@@ -19,9 +19,9 @@ export class SubscriptionController implements IController {
 
     private initalizeRouter(): void {
         this.router.get(
-            "/",
+            "",
             authOptionalMiddleware,
-            this.getAllHandler.bind(this)
+            this.getSubscriptionByStudio.bind(this)
         );
         this.router.post(
             "/accept/:subscriber_id",
@@ -40,15 +40,11 @@ export class SubscriptionController implements IController {
     }
 
     // READ SUBSCRIPTION
-    private async getAllHandler(req: Request, res: Response) {
-        try {
-            const subscriptions = await this.subscription.getAllByStudio(
-                req.auth.studio_id
-            );
-            return res.status(200).json({ subscription: subscriptions });
-        } catch (err: any) {
-            return res.status(err.status).json({ err: err.message });
-        }
+    private async getSubscriptionByStudio(req: Request, res: Response) {
+        const result = await this.subscription.getAllRequestByStudio(
+            req.auth.studio_id
+        );
+        return res.status(200).json({ subscriptions: result });
     }
 
     // ACCEPT SUBSCRIPTION
