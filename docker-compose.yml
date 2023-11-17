@@ -13,7 +13,8 @@ services:
             - rest-backend
     rest-app:
         build: 
-            context: ./
+            context: .
+            dockerfile: Dockerfile
         ports:
             - 8003:8003
         hostname: rest-app
