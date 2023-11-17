@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Post, PrismaClient } from "@prisma/client";
 import { UploadedFile } from "express-fileupload";
 import path from "path";
 
@@ -105,11 +105,47 @@ export class PostUsecase {
 
     public async getAllByStudio(studio_id: number) {
         const result = await this.repo.post.findMany({
-            orderBy: { created_at: "desc" },
+            select: {
+                post_id: true,
+                title: true,
+                body: true,
+                updated_at: true,
+                img_path: true,
+            },
+            orderBy: { updated_at: "desc" },
             where: {
-                studio_id,
+                studio_id: studio_id,
             },
         });
         return result;
+    }
+
+    public async getAllByStudioWithOffset(studio_id: number, page: number) {
+        const result = await this.repo.post.findMany({
+            select: {
+                post_id: true,
+                title: true,
+                body: true,
+                updated_at: true,
+                img_path: true,
+            },
+            orderBy: { updated_at: "desc" },
+            where: {
+                studio_id: studio_id,
+            },
+            skip: (page - 1) * 9,
+            take: 9,
+        });
+        return result;
+    }
+
+    public async getCountPosts(studio_id: number) {
+        const total: number = await this.repo.post.count({
+            where: {
+                studio_id: studio_id,
+            },
+        });
+
+        return Math.ceil(total / 9);
     }
 }

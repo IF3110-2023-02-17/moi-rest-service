@@ -1,57 +1,53 @@
 import { PrismaClient } from "@prisma/client";
 import { UploadedFile } from "express-fileupload";
 import path from "path";
+import { Client } from "../clients/Client";
 
 export class SubscriptionUsecase {
     private repo: PrismaClient;
+    private client: Client;
 
-    constructor(repo: PrismaClient) {
+    constructor(repo: PrismaClient, client: Client) {
         this.repo = repo;
+        this.client = client;
     }
 
-    public async getAll() {
-        const result = await this.repo.subscription.findMany();
-        return result;
-    }
+    public async getAllByStudio(studioID: number) {
+        try {
+            const result = await this.client.soap.invoke(
+                { studioID: studioID },
+                "getSubscriptionStudio"
+            );
 
-    public async create(studio_id: number, target_subscription_studio_id: number) {
-        const isExists = await this.repo.subscription.findFirst({
-            where: {
-                studio_id,
-                target_subscription_studio_id
-            }
-        });
-
-        if(isExists) {
-            return "error";
+            return result.result;
+        } catch (err) {
+            throw err;
         }
-
-        const result = await this.repo.subscription.create({
-            data: {
-                studio_id,
-                target_subscription_studio_id: target_subscription_studio_id
-            },
-        });
-        return result;
     }
 
-    public async delete(studio_id: number, target_subscription_studio_id: number) {
-        const subscribe = await this.repo.subscription.findFirst({
-            where: {
-                AND: { target_subscription_studio_id, studio_id }
-            }
-        });
+    public async accept(studioID: number, subscriberID: number) {
+        try {
+            const result = await this.client.soap.invoke(
+                { studioID: studioID, subscriberID: subscriberID },
+                "acceptSubscription"
+            );
 
-        if(!subscribe) {
-            return "error";
+            return result.result;
+        } catch (err) {
+            throw err;
         }
+    }
 
-        const result = await this.repo.subscription.delete({
-            where: {
-                subscription_id: subscribe.subscription_id,
-            },
-        });
+    public async reject(studioID: number, subscriberID: number) {
+        try {
+            const result = await this.client.soap.invoke(
+                { studioID: studioID, subscriberID: subscriberID },
+                "rejectSubscription"
+            );
 
-        return result;
+            return result.result;
+        } catch (err) {
+            throw err;
+        }
     }
 }

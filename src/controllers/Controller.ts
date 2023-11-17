@@ -35,7 +35,7 @@ export class Controller implements IController {
         );
         this.router.use(
             "/posts",
-            authRequiredMiddleware,
+
             this.postController.controllerRouter()
         );
         this.router.use(

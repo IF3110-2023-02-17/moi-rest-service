@@ -15,7 +15,7 @@ export class StudioUseCase {
         return result;
     }
 
-    public async getStudioBySubscriber(subscriberID: number, page: number) {
+    public async getStudioBySubscriber(subscriberID: number, page: number = 1) {
         const studios: any[] = await this.repo.studio.findMany({
             select: {
                 studio_id: true,
@@ -35,13 +35,14 @@ export class StudioUseCase {
         );
 
         const subsmap = new Map<number, string>();
-        for (let i = 0; i < subscribe.result.length; i++) {
-            subsmap.set(
-                subscribe.result.at(i).studioId as number,
-                subscribe.result.at(i).status as string
-            );
+        if (subscribe != null) {
+            for (let i = 0; i < subscribe.result.length; i++) {
+                subsmap.set(
+                    subscribe.result.at(i).studioId as number,
+                    subscribe.result.at(i).status as string
+                );
+            }
         }
-
         for (let i = 0; i < studios.length; i++) {
             studios.at(i).accept = false;
             studios.at(i).pending = false;
@@ -66,5 +67,18 @@ export class StudioUseCase {
         });
 
         return Math.ceil(total / 9);
+    }
+
+    public async getStudioNameByID(studio_id: number) {
+        const studio = await this.repo.studio.findFirst({
+            where: {
+                studio_id: studio_id,
+            },
+            select: {
+                name: true,
+            },
+        });
+
+        return studio?.name;
     }
 }

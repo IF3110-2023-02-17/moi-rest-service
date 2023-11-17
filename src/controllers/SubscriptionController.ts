@@ -5,6 +5,7 @@ import { IController } from "../interfaces/IController";
 import { SubscriptionUsecase } from "../usecases/SubscriptionUsecase";
 import { Usecase } from "../usecases/Usecase";
 import { HttpStatus } from "../utils/HttpStatus";
+import { authOptionalMiddleware } from "../middlewares/authMiddleware";
 
 export class SubscriptionController implements IController {
     private router: Router;
@@ -17,9 +18,21 @@ export class SubscriptionController implements IController {
     }
 
     private initalizeRouter(): void {
-        this.router.get("/", this.getAllHandler.bind(this));
-        this.router.post("/", this.createHandler.bind(this));
-        this.router.delete("/", this.deleteHandler.bind(this));
+        this.router.get(
+            "/",
+            authOptionalMiddleware,
+            this.getAllHandler.bind(this)
+        );
+        this.router.post(
+            "/accept/:subscriber_id",
+            authOptionalMiddleware,
+            this.acceptHandler.bind(this)
+        );
+        this.router.post(
+            "/reject/:subscriber_id",
+            authOptionalMiddleware,
+            this.rejectHandler.bind(this)
+        );
     }
 
     controllerRouter(): Router {
@@ -28,56 +41,57 @@ export class SubscriptionController implements IController {
 
     // READ SUBSCRIPTION
     private async getAllHandler(req: Request, res: Response) {
-        const subscriptions = await this.subscription.getAll();
-        return res.status(200).json({ subscriptions });
+        try {
+            const subscriptions = await this.subscription.getAllByStudio(
+                req.auth.studio_id
+            );
+            return res.status(200).json({ subscription: subscriptions });
+        } catch (err: any) {
+            return res.status(err.status).json({ err: err.message });
+        }
     }
 
     // ACCEPT SUBSCRIPTION
-    private async createHandler(
-        req: Request<{
-            studio_id: number;
-            target_subscription_studio_id: number;
-        }>,
-        res: Response
-    ) {
-        const { studio_id, target_subscription_studio_id } = req.body;
-        const subscription = await this.subscription.create(
-            studio_id,
-            target_subscription_studio_id
-        );
-        if (subscription === "error") {
-            return res
-                .status(400)
-                .json({
-                    message:
-                        "Error cannot subscribe! Studio already subscribe!",
-                });
+    private async acceptHandler(req: Request, res: Response) {
+        try {
+            console.log("test");
+            const subscriberID = Number(req.params.subscriber_id);
+            const subscription = await this.subscription.accept(
+                req.auth.studio_id,
+                subscriberID
+            );
+
+            return res.status(200).json({
+                subscription: subscription,
+                message: "Accept Success!!",
+            });
+        } catch (err: any) {
+            return res.status(err.status).json({
+                subscription: null,
+                message: err.message,
+            });
         }
-        return res
-            .status(200)
-            .json({ subscription, message: "Subscribe Success!!" });
     }
 
     // REJECT SUBSCRIPTION
-    private async deleteHandler(
-        req: Request<{
-            studio_id: number;
-            target_subscription_studio_id: number;
-        }>,
-        res: Response
-    ) {
-        const { studio_id, target_subscription_studio_id } = req.body;
-        const subscription = await this.subscription.delete(
-            studio_id,
-            target_subscription_studio_id
-        );
-        if (subscription === "error") {
-            return res
-                .status(404)
-                .json({ message: "Error cannot unsubscribe! Not found!" });
+    private async rejectHandler(req: Request, res: Response) {
+        try {
+            console.log("test");
+            const subscriberID = Number(req.params.subscriber_id);
+            const subscription = await this.subscription.reject(
+                req.auth.studio_id,
+                subscriberID
+            );
+
+            return res.status(200).json({
+                subscription: subscription,
+                message: "Reject Success!!",
+            });
+        } catch (err: any) {
+            return res.status(err.status).json({
+                subscription: null,
+                message: err.message,
+            });
         }
-        return res
-            .status(200)
-            .json({ subscription, message: "Unsubscribe Success!!" });
     }
 }
