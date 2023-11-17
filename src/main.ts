@@ -1,14 +1,14 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import * as dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import express from "express";
 import fileUpload from "express-fileupload";
 import path from "path";
 import { Client } from "./clients/Client";
 import { Controller } from "./controllers/Controller";
 import { Database } from "./database/Database";
-import { Usecase } from "./usecases/Usecase";
 import noMiddleware from "./middlewares/noMiddleware";
+import { Usecase } from "./usecases/Usecase";
 
 const port = 8003;
 const app = express();
